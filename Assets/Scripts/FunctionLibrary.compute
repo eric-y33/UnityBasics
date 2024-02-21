@@ -1,0 +1,37 @@
+// compute shaders need a main function known as a kernel followed by a name
+#pragma kernel FunctionKernel
+
+// compute buffer = structured buffer in HLSL, this is the read-write version
+RWStructuredBuffer<float3> _Positions;
+
+uint _Resolution;
+
+float _Step, _Time;
+
+float2 GetUV (uint3 id) {
+	return (id.xy + 0.5) * _Step - 1.0;
+}
+
+// 2D data stored in the 1D array
+void SetPosition (uint3 id, float3 position) {
+	if (id.x < _Resolution && id.y < _Resolution) {
+		_Positions[id.x + id.y * _Resolution] = position;
+	}
+}
+
+#define PI 3.14159265358979323846
+float3 Wave (float u, float v, float t) {
+	float3 p;
+	p.x = u;
+	p.y = sin(PI * (u + v + t));
+	p.z = v;
+	return p;
+}
+
+// specifying 64 threads as a 2D 8x8 grid
+[numthreads(8, 8, 1)]
+// argument is explicitly indicating this parameter is for the thread identifier
+void FunctionKernel (uint3 id: SV_DispatchThreadID) {
+    float2 uv = GetUV(id);
+	SetPosition(id, Wave(uv.x, uv.y, _Time));
+}

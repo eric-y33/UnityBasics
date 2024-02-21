@@ -402,15 +402,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1187031359}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0147565942cca094fb62eeaf731bceba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pointPrefab: {fileID: 4100697775455367041, guid: 9b7053535a6a68c4b90a0171a176758f, type: 3}
-  resolution: 59
+  resolution: 79
   function: 0
   functionDuration: 1
+  transitionDuration: 1
+  transitionMode: 0
 --- !u!4 &1187031361
 Transform:
   m_ObjectHideFlags: 0
@@ -878,6 +880,58 @@ MonoBehaviour:
   display: {fileID: 1775924295}
   displayMode: 1
   sampleDuration: 1
+--- !u!1 &1939613605
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1939613607}
+  - component: {fileID: 1939613606}
+  m_Layer: 0
+  m_Name: GPUGraph
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1939613606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939613605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be213e125f03a8d41b4789648f7a2c01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  computeShader: {fileID: 7200000, guid: f26ed066b27839a48b32d8c1793e78b6, type: 3}
+  resolution: 200
+  function: 4
+  functionDuration: 1
+  transitionDuration: 0
+  transitionMode: 0
+  material: {fileID: 2100000, guid: 93dc5786ee7841b429ffcde5d1ef24dd, type: 2}
+  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1939613607
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939613605}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.3320347, y: -10.492496, z: 12.669871}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1950773758
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,3 +1010,4 @@ SceneRoots:
   - {fileID: 1562085376}
   - {fileID: 1473373506}
   - {fileID: 1950773761}
+  - {fileID: 1939613607}
