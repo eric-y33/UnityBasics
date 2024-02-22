@@ -910,7 +910,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   computeShader: {fileID: 7200000, guid: f26ed066b27839a48b32d8c1793e78b6, type: 3}
-  resolution: 298
+  resolution: 380
   function: 4
   functionDuration: 1
   transitionDuration: 0

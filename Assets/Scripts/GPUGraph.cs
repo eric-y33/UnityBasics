@@ -5,7 +5,8 @@ public class GPUGraph : MonoBehaviour {
 	[SerializeField]
 	ComputeShader computeShader;
 
-    [SerializeField, Range(10, 1000)]
+	const int maxResolution = 1000;
+    [SerializeField, Range(10, maxResolution)]
 	int resolution = 10;
 
     [SerializeField]
@@ -54,13 +55,13 @@ public class GPUGraph : MonoBehaviour {
 		// procedural drawing with args for mesh, sub-mesh index, material, bounds, and num of instances
 		// this way of drawing DOES NOT USE GAME OBJECTS so unity doesn't know where it is automatically
 		var bounds = new Bounds(Vector3.zero, Vector3.one * (2f + 2f / resolution));
-		Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, positionsBuffer.count);
+		Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, resolution * resolution);
 	}
 
 	// gets invoked whenever a component is enabled and survives hot reloads
 	void OnEnable () { 
 		// allocating space to store positions in GPU
-		positionsBuffer = new ComputeBuffer(resolution * resolution, 3 * 4);
+		positionsBuffer = new ComputeBuffer(maxResolution * maxResolution, 3 * 4);
 	}
 
 	// gets invoked when a component is disabled like when a graph is destroyed and right before a hot reload
