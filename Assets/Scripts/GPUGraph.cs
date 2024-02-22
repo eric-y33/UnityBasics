@@ -50,7 +50,10 @@ public class GPUGraph : MonoBehaviour {
 		}
 
 		// doesn't set data, just links buffer to kernel (first arg is index of kernel function)
-		var kernelIndex = (int) function + (int)(transitioning ? transitionFunction : function) * 5;
+		var kernelIndex = 
+			(int) function + 
+			(int)(transitioning ? transitionFunction : function) *
+			FunctionLibrary.FunctionCount;
 		computeShader.SetBuffer(kernelIndex, positionsId, positionsBuffer);
 
 		// actually runs the kernel with specified amount of groups to run

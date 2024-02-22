@@ -10,6 +10,13 @@ public static class FunctionLibrary {
 
     static Function[] functions = { Wave, MultiWave, Ripple, Sphere, Torus };
 
+	public static int FunctionCount => functions.Length;
+	// public static int FunctionCount {
+	// 	get {
+	// 		return functions.Length;
+	// 	}
+	// }
+
     public static Function GetFunction (FunctionName name) {
 		return functions[(int) name];
 	}
