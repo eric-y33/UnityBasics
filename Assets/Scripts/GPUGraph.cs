@@ -109,10 +109,11 @@ public class GPUGraph : MonoBehaviour {
 	}
 
 	void CycleResolution() {
-		int slowFactor = 5;
-		int lowestResolution = 10;
-		resolution = (int) ((maxResolution - lowestResolution)/2 * Mathf.Sin(totalDuration/slowFactor)) + 
-			(maxResolution + lowestResolution)/2;
+		int slowFactor = 2;
+		int lowestResolution = 45;
+		int cycleMaxResolution = maxResolution - 100;
+		resolution = (int) ((cycleMaxResolution - lowestResolution)/2 * Mathf.Sin(totalDuration/slowFactor)) + 
+			(cycleMaxResolution + lowestResolution)/2;
 		// Debug.Log(Mathf.Sin(totalDuration));
 	}
 
