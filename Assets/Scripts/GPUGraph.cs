@@ -7,7 +7,7 @@ public class GPUGraph : MonoBehaviour {
 
 	const int maxResolution = 1000;
     [SerializeField, Range(10, maxResolution)]
-	int resolution = 10;
+	static int resolution = 10;
 
     [SerializeField]
 	FunctionLibrary.FunctionName function;
@@ -29,6 +29,8 @@ public class GPUGraph : MonoBehaviour {
     bool transitioning;
     FunctionLibrary.FunctionName transitionFunction;
 	ComputeBuffer positionsBuffer;
+
+	public static int Resolution => resolution;
 
 	// setting properties of compute shader
 	static readonly int positionsId = Shader.PropertyToID("_Positions"),

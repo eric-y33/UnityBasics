@@ -19,7 +19,6 @@ public class Graph : MonoBehaviour {
 	[SerializeField]
 	TransitionMode transitionMode;
 
-
     Transform[] points;
 
     void Awake () {
