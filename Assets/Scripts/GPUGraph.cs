@@ -25,7 +25,7 @@ public class GPUGraph : MonoBehaviour {
 	[SerializeField]
 	Mesh mesh;
 
-    float duration;
+    float duration, totalDuration;
     bool transitioning;
     FunctionLibrary.FunctionName transitionFunction;
 	ComputeBuffer positionsBuffer;
@@ -83,6 +83,7 @@ public class GPUGraph : MonoBehaviour {
 
     void Update () {
         duration += Time.deltaTime;
+		totalDuration += Time.deltaTime;
         if (transitioning) {
             if (duration >= transitionDuration) {
 				duration -= transitionDuration;
@@ -95,6 +96,7 @@ public class GPUGraph : MonoBehaviour {
 			transitionFunction = function;
             PickNextFunction();
 		}
+		CycleResolution();
 		UpdateFunctionOnGPU();
 	}
 
@@ -102,6 +104,14 @@ public class GPUGraph : MonoBehaviour {
 		function = transitionMode == TransitionMode.Cycle ?
 			FunctionLibrary.GetNextFunctionName(function) :
 			FunctionLibrary.GetRandomFunctionNameOtherThan(function);
+	}
+
+	void CycleResolution() {
+		int slowFactor = 5;
+		int lowestResolution = 10;
+		resolution = (int) ((maxResolution - lowestResolution)/2 * Mathf.Sin(totalDuration/slowFactor)) + 
+			(maxResolution + lowestResolution)/2;
+		// Debug.Log(Mathf.Sin(totalDuration));
 	}
 
 }
