@@ -394,7 +394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1187031360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,7 +408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPrefab: {fileID: 4100697775455367041, guid: 9b7053535a6a68c4b90a0171a176758f, type: 3}
-  resolution: 79
+  resolution: 10
   function: 0
   functionDuration: 1
   transitionDuration: 1
@@ -878,7 +878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   display: {fileID: 1775924295}
-  displayMode: 1
+  displayMode: 0
   sampleDuration: 1
 --- !u!1 &1939613605
 GameObject:
@@ -910,12 +910,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   computeShader: {fileID: 7200000, guid: f26ed066b27839a48b32d8c1793e78b6, type: 3}
-  resolution: 200
+  resolution: 536
   function: 4
   functionDuration: 1
   transitionDuration: 0
   transitionMode: 0
-  material: {fileID: 2100000, guid: 93dc5786ee7841b429ffcde5d1ef24dd, type: 2}
+  material: {fileID: 2100000, guid: 1bfa699ddf6266841bd3c83d3b4f3fdc, type: 2}
   mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &1939613607
 Transform:

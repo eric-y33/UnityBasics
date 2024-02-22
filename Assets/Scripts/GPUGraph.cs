@@ -5,7 +5,7 @@ public class GPUGraph : MonoBehaviour {
 	[SerializeField]
 	ComputeShader computeShader;
 
-    [SerializeField, Range(10, 200)]
+    [SerializeField, Range(10, 1000)]
 	int resolution = 10;
 
     [SerializeField]
@@ -47,6 +47,9 @@ public class GPUGraph : MonoBehaviour {
 		// actually runs the kernel with specified amount of groups to run
 		int groups = Mathf.CeilToInt(resolution / 8f);
 		computeShader.Dispatch(0, groups, groups, 1);
+
+		material.SetBuffer(positionsId, positionsBuffer);
+		material.SetFloat(stepId, step);
 
 		// procedural drawing with args for mesh, sub-mesh index, material, bounds, and num of instances
 		// this way of drawing DOES NOT USE GAME OBJECTS so unity doesn't know where it is automatically
