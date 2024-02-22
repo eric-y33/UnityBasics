@@ -34,16 +34,23 @@ public class GPUGraph : MonoBehaviour {
 	static readonly int positionsId = Shader.PropertyToID("_Positions"),
 		resolutionId = Shader.PropertyToID("_Resolution"),
 		stepId = Shader.PropertyToID("_Step"),
-		timeId = Shader.PropertyToID("_Time");
+		timeId = Shader.PropertyToID("_Time"),
+		transitionProgressId = Shader.PropertyToID("_TransitionProgress");
 
 	void UpdateFunctionOnGPU () {
 		float step = 2f / resolution;
 		computeShader.SetInt(resolutionId, resolution);
 		computeShader.SetFloat(stepId, step);
 		computeShader.SetFloat(timeId, Time.time);
+		if (transitioning) {
+			computeShader.SetFloat(
+				transitionProgressId,
+				Mathf.SmoothStep(0f, 1f, duration / transitionDuration)
+			);
+		}
 
 		// doesn't set data, just links buffer to kernel (first arg is index of kernel function)
-		var kernelIndex = (int) function;
+		var kernelIndex = (int) function + (int)(transitioning ? transitionFunction : function) * 5;
 		computeShader.SetBuffer(kernelIndex, positionsId, positionsBuffer);
 
 		// actually runs the kernel with specified amount of groups to run
