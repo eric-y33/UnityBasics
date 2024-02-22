@@ -42,12 +42,13 @@ public class GPUGraph : MonoBehaviour {
 		computeShader.SetFloat(stepId, step);
 		computeShader.SetFloat(timeId, Time.time);
 
-		// doesn't set data, just links buffer to kernel (0 = index of kernel function)
-		computeShader.SetBuffer(0, positionsId, positionsBuffer);
+		// doesn't set data, just links buffer to kernel (first arg is index of kernel function)
+		var kernelIndex = (int) function;
+		computeShader.SetBuffer(kernelIndex, positionsId, positionsBuffer);
 
 		// actually runs the kernel with specified amount of groups to run
 		int groups = Mathf.CeilToInt(resolution / 8f);
-		computeShader.Dispatch(0, groups, groups, 1);
+		computeShader.Dispatch(kernelIndex, groups, groups, 1);
 
 		material.SetBuffer(positionsId, positionsBuffer);
 		material.SetFloat(stepId, step);
