@@ -29,12 +29,27 @@ public class Fractal : MonoBehaviour {
             FractalPart parent = parents[i / 5];
             FractalPart part = parts[i];
             part.spinAngle += spinAngleDelta;
-            part.worldRotation = mul(parent.worldRotation,
+
+            float3 upAxis = mul(mul(parent.worldRotation, part.rotation), up());
+            float3 sagAxis = cross(up(), upAxis);
+
+            float sagMagnitude = length(sagAxis);
+			quaternion baseRotation;
+			if (sagMagnitude > 0f) {
+				sagAxis /= sagMagnitude;
+                quaternion sagRotation = quaternion.AxisAngle(sagAxis, PI * 0.25f);
+                baseRotation = mul(sagRotation, parent.worldRotation);
+            }
+            else {
+                baseRotation = parent.worldRotation;
+            }
+            
+            part.worldRotation = mul(baseRotation,
 				mul(part.rotation, quaternion.RotateY(part.spinAngle))
 			);
             part.worldPosition =
                 parent.worldPosition +
-                mul(parent.worldRotation, 1.5f * scale * part.direction);
+                mul(part.worldRotation, float3(0f, 1.5f * scale, 0f));
             parts[i] = part;
 
 
@@ -45,16 +60,17 @@ public class Fractal : MonoBehaviour {
     }
 
     struct FractalPart {
-		public float3 direction, worldPosition;
+		// public float3 direction, worldPosition;
+        public float3 worldPosition;
 		public quaternion rotation, worldRotation;
         public float spinAngle;
 	}
 
-    [SerializeField, Range(2, 8)]
+    [SerializeField, Range(3, 8)]
 	int depth = 4;
 
     [SerializeField]
-	Mesh mesh;
+	Mesh mesh, leafMesh;
 
 	[SerializeField]
 	Material material;
@@ -62,9 +78,12 @@ public class Fractal : MonoBehaviour {
     [SerializeField]
     Gradient gradientA, gradientB;
 
-    static float3[] directions = {
-		up(), right(), left(), forward(), back()
-	};
+    [SerializeField]
+	Color leafColorA, leafColorB;
+
+    // static float3[] directions = {
+	// 	up(), right(), left(), forward(), back()
+	// };
 
 	static quaternion[] rotations = {
 		quaternion.identity,
@@ -74,7 +93,7 @@ public class Fractal : MonoBehaviour {
 
     FractalPart CreatePart (int childIndex) {
         return new FractalPart {
-            direction = directions[childIndex],
+            // direction = directions[childIndex],
 			rotation = rotations[childIndex]
         };
 	}
@@ -103,7 +122,7 @@ public class Fractal : MonoBehaviour {
 			parts[i] = new NativeArray<FractalPart>(length, Allocator.Persistent);
 			matrices[i] = new NativeArray<float3x4>(length, Allocator.Persistent);
             matricesBuffers[i] = new ComputeBuffer(length, stride);
-            sequenceNumbers[i] = new Vector4(Random.value, Random.value);
+            sequenceNumbers[i] = new Vector4(Random.value, Random.value, Random.value, Random.value);
 		}
 
         // float scale = 1f;
@@ -179,6 +198,7 @@ public class Fractal : MonoBehaviour {
 
         // Send data to the GPU through SetData and draw
         var bounds = new Bounds(rootPart.worldPosition, 3f * objectScale * Vector3.one);
+        int leafIndex = matricesBuffers.Length - 1; 
 		for (int i = 0; i < matricesBuffers.Length; i++) {
 			ComputeBuffer buffer = matricesBuffers[i];
 			buffer.SetData(matrices[i]);
@@ -186,12 +206,24 @@ public class Fractal : MonoBehaviour {
             // propertyBlock.SetColor(
 			// 	baseColorId, gradient.Evaluate(i / (matricesBuffers.Length - 1f)) 
 			// );
-            float gradientInterpolator = i / (matricesBuffers.Length - 1f);
-			propertyBlock.SetColor(colorAId, gradientA.Evaluate(gradientInterpolator));
-			propertyBlock.SetColor(colorBId, gradientB.Evaluate(gradientInterpolator));
+            Color colorA, colorB;
+            Mesh instanceMesh;
+			if (i == leafIndex) {
+				colorA = leafColorA;
+				colorB = leafColorB;
+                instanceMesh = leafMesh;
+			}
+			else {
+                float gradientInterpolator = i / (matricesBuffers.Length - 2f);
+                colorA = gradientA.Evaluate(gradientInterpolator);
+				colorB = gradientB.Evaluate(gradientInterpolator);
+                instanceMesh = mesh;
+            }
+			propertyBlock.SetColor(colorAId, colorA);
+			propertyBlock.SetColor(colorBId, colorB);
 			propertyBlock.SetBuffer(matricesId, buffer);
             propertyBlock.SetVector(sequenceNumbersId, sequenceNumbers[i]);
-			Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, buffer.count, propertyBlock);
+			Graphics.DrawMeshInstancedProcedural(instanceMesh, 0, material, bounds, buffer.count, propertyBlock);
 		}
 	}
 

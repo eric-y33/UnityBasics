@@ -1394,11 +1394,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   depth: 6
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  leafMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: -876546973899608171, guid: 023ab76f1a5dbf64cbc17885bf671ca3, type: 3}
   gradientA:
     serializedVersion: 2
     key0: {r: 0.85098046, g: 0.3921569, b: 0, a: 1}
-    key1: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+    key1: {r: 0.97647065, g: 0.8313726, b: 0.3137255, a: 1}
     key2: {r: 0.6, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -1428,8 +1429,8 @@ MonoBehaviour:
   gradientB:
     serializedVersion: 2
     key0: {r: 0.9843138, g: 0.9843138, b: 0.9921569, a: 1}
-    key1: {r: 0, g: 0.33333334, b: 0.2392157, a: 1}
-    key2: {r: 0, g: 0, b: 0.6, a: 0}
+    key1: {r: 0.9803922, g: 0.9803922, b: 0.6, a: 1}
+    key2: {r: 0.9490197, g: 0.40784317, b: 0.25882354, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
@@ -1455,6 +1456,8 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
+  leafColorA: {r: 0.6862745, g: 0.4666667, b: 0.7607844, a: 0.5882353}
+  leafColorB: {r: 0.46274513, g: 0.18431373, b: 0.6117647, a: 0.79607844}
 --- !u!4 &2107755148
 Transform:
   m_ObjectHideFlags: 0
