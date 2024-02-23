@@ -5,6 +5,39 @@ using UnityEngine;
 
 public class Fractal : MonoBehaviour {
 
+    // Explicitly tell Unity to compile our job struct with Burst
+    [BurstCompile(CompileSynchronously = true)]
+    struct UpdateFractalLevelJob : IJobFor {
+
+        public float spinAngleDelta;
+		public float scale;
+
+        [ReadOnly]
+		public NativeArray<FractalPart> parents;
+		public NativeArray<FractalPart> parts;
+
+        [WriteOnly]
+		public NativeArray<Matrix4x4> matrices;
+
+        public void Execute (int i) {
+            FractalPart parent = parents[i / 5];
+            FractalPart part = parts[i];
+            part.spinAngle += spinAngleDelta;
+            part.worldRotation = 
+                parent.worldRotation * 
+                (part.rotation * Quaternion.Euler(0f, part.spinAngle, 0f));;
+            part.worldPosition =
+                parent.worldPosition +
+                parent.worldRotation * (1.5f * scale * part.direction);
+            parts[i] = part;
+
+            matrices[i] = Matrix4x4.TRS(
+                part.worldPosition, part.worldRotation, scale * Vector3.one
+            );
+        }
+
+    }
+
     struct FractalPart {
 		public Vector3 direction, worldPosition;
 		public Quaternion rotation, worldRotation;
@@ -93,7 +126,6 @@ public class Fractal : MonoBehaviour {
 	}
 
     void Update () {
-        // Quaternion deltaRotation = Quaternion.Euler(0f, 22.5f * Time.deltaTime, 0f);
         float spinAngleDelta = 22.5f * Time.deltaTime;
         FractalPart rootPart = parts[0][0];
         rootPart.spinAngle += spinAngleDelta;
@@ -108,28 +140,24 @@ public class Fractal : MonoBehaviour {
 		);
 
         float scale = objectScale;
+        JobHandle jobHandle = default;
 		for (int li = 1; li < parts.Length; li++) {
             scale *= 0.5f;
-            NativeArray<FractalPart> parentParts = parts[li - 1];
-			NativeArray<FractalPart> levelParts = parts[li];
-			NativeArray<Matrix4x4> levelMatrices = matrices[li];
-			for (int fpi = 0; fpi < levelParts.Length; fpi++) {
-                // Transform parentTransform = parentParts[fpi / 5].transform;
-                FractalPart parent = parentParts[fpi / 5];
-				FractalPart part = levelParts[fpi];
-                part.spinAngle += spinAngleDelta;
-                part.worldRotation = 
-                    parent.worldRotation * 
-                    (part.rotation * Quaternion.Euler(0f, part.spinAngle, 0f));;
-                part.worldPosition =
-					parent.worldPosition +
-					parent.worldRotation * (1.5f * scale * part.direction);
-                levelParts[fpi] = part;
-                levelMatrices[fpi] = Matrix4x4.TRS(
-					part.worldPosition, part.worldRotation, scale * Vector3.one
-				);
-			}
+            jobHandle = new UpdateFractalLevelJob {
+				spinAngleDelta = spinAngleDelta,
+				scale = scale,
+				parents = parts[li - 1],
+				parts = parts[li],
+				matrices = matrices[li]
+			}.Schedule(parts[li].Length, jobHandle);
+            // We don't have to invoke Execute every iteration, we want to schedule it so it does it itself
+			// for (int fpi = 0; fpi < levelParts.Length; fpi++) {
+            //     job.Execute(fpi);
+			// } 
 		}
+        // .Complete() delays further execution of code till job is completed
+        // Here, every job is depending on the next through jobHandle so all of them will complete before moving on
+        jobHandle.Complete();
 
         // Send data to the GPU through SetData and draw
         var bounds = new Bounds(rootPart.worldPosition, 3f * objectScale * Vector3.one);
