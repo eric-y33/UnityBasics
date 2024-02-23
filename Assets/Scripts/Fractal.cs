@@ -49,7 +49,7 @@ public class Fractal : MonoBehaviour {
         public float spinAngle;
 	}
 
-    [SerializeField, Range(1, 8)]
+    [SerializeField, Range(2, 8)]
 	int depth = 4;
 
     [SerializeField]
@@ -75,7 +75,9 @@ public class Fractal : MonoBehaviour {
         };
 	}
 
-    static readonly int matricesId = Shader.PropertyToID("_Matrices");
+    static readonly int 
+        baseColorId = Shader.PropertyToID("_BaseColor"),
+        matricesId = Shader.PropertyToID("_Matrices");
 
     NativeArray<FractalPart>[] parts;
 	NativeArray<float3x4>[] matrices;
@@ -169,6 +171,9 @@ public class Fractal : MonoBehaviour {
 		for (int i = 0; i < matricesBuffers.Length; i++) {
 			ComputeBuffer buffer = matricesBuffers[i];
 			buffer.SetData(matrices[i]);
+            propertyBlock.SetColor(
+				baseColorId, Color.white * (i / (matricesBuffers.Length - 1f))
+			);
 			propertyBlock.SetBuffer(matricesId, buffer);
 			Graphics.DrawMeshInstancedProcedural(mesh, 0, material, bounds, buffer.count, propertyBlock);
 		}
